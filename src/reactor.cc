@@ -123,6 +123,7 @@ void Reactor::Tick() {
   // they
   // can't go at the beginnin of the Tock is so that resource exchange has a
   // chance to occur after the discharge on this same time step.
+  int t = context()->time();
 
   if (retired()) {
     Record("RETIRED", "");
@@ -152,19 +153,18 @@ void Reactor::Tick() {
     return;
   }
 
-  if (cycle_step == cycle_time) {
+  if (t == next_cycle) { //MEG
     Transmute();
     Record("CYCLE_END", "");
   }
 
-  if (cycle_step >= cycle_time && !discharged) {
+  if (t >= next_cycle && !discharged) { // MEg
     discharged = Discharge();
   }
-  if (cycle_step >= cycle_time) {
+  if (t >= next_cycle) {
     Load();
   }
 
-  int t = context()->time();
 
   // update preferences
   for (int i = 0; i < pref_change_times.size(); i++) {
@@ -255,6 +255,42 @@ std::set<cyclus::RequestPortfolio<Material>::Ptr> Reactor::GetMatlRequests() {
   return ports;
 }
 
+void Reactor::EventRequest(){
+  int t = context()->time();
+  int n_assem_order = n_assem_core - core.count() + n_assem_fresh - fresh.count();
+
+  if (exit_time() != -1) {
+
+    int t_left = exit_time() - context()->time() + 1;
+    int t_left_cycle = cycle_time + refuel_time - cycle_step;
+    double n_cycles_left = static_cast<double>(t_left - t_left_cycle) /
+                         static_cast<double>(cycle_time + refuel_time);
+    n_cycles_left = ceil(n_cycles_left);
+    int n_need = std::max(0.0, n_cycles_left * n_assem_batch - n_assem_fresh + n_assem_core - core.count());
+    n_assem_order = std::min(n_assem_order, n_need);
+  }
+
+  if(t == next_cycle){
+    for(int refuel_step = 0; refuel_step < refuel_time; refuel_step++){
+      context()->RegisterRequesters(t + refuel_step, this);
+      std::cout<<"REACTOR Requested for " << t+refuel_step << "\n";
+    }
+  }
+  else if (t >= next_cycle) {
+    if (n_assem_order > 0){
+      context()->RegisterRequesters(t + 1,this);
+      std::cout<<"REACTOR Requested for " << t +1 << "\n";
+    }
+    else if (n_assem_order == 0){
+      context()->RegisterRequesters(t + cycle_time, this);
+      int refuel_step = 0;
+      next_cycle = t + cycle_time;
+      std::cout<<"REACTOR Requested for " << t+cycle_time << "\n";
+    }
+  }
+}
+
+
 void Reactor::GetMatlTrades(
     const std::vector<cyclus::Trade<Material> >& trades,
     std::vector<std::pair<cyclus::Trade<Material>, Material::Ptr> >&
@@ -273,7 +309,7 @@ void Reactor::GetMatlTrades(
 }
 
 void Reactor::AcceptMatlTrades(const std::vector<
-    std::pair<cyclus::Trade<Material>, Material::Ptr> >& responses) {
+  std::pair<cyclus::Trade<Material>, Material::Ptr> >& responses) {
   std::vector<std::pair<cyclus::Trade<Material>,
                         Material::Ptr> >::const_iterator trade;
 
@@ -355,6 +391,7 @@ std::set<cyclus::BidPortfolio<Material>::Ptr> Reactor::GetMatlBids(
 }
 
 void Reactor::Tock() {
+  int t = context()->time();
   if (retired()) {
     return;
   }
@@ -362,7 +399,7 @@ void Reactor::Tock() {
   // Check that irradiation and refueling periods are over, that 
   // the core is full and that fuel was successfully discharged in this refueling time.
   // If this is the case, then a new cycle will be initiated.
-  if (cycle_step >= cycle_time + refuel_time && core.count() == n_assem_core && discharged == true) {
+  if (t >= next_cycle + refuel_time && core.count() == n_assem_core && discharged == true) { // MEG
     discharged = false;
     cycle_step = 0;
   }
@@ -371,7 +408,7 @@ void Reactor::Tock() {
     Record("CYCLE_START", "");
   }
 
-  if (cycle_step >= 0 && cycle_step < cycle_time &&
+  if (cycle_step >= 0 && cycle_step < cycle_time && //MEG come baack to this 
       core.count() == n_assem_core) {
     cyclus::toolkit::RecordTimeSeries<cyclus::toolkit::POWER>(this, power_cap);
     cyclus::toolkit::RecordTimeSeries<double>("supplyPOWER", this, power_cap);
@@ -384,9 +421,9 @@ void Reactor::Tock() {
 
   // "if" prevents starting cycle after initial deployment until core is full
   // even though cycle_step is its initial zero.
-  if (cycle_step > 0 || core.count() == n_assem_core) {
-    cycle_step++;
-  }
+  // if (cycle_step > 0 || core.count() == n_assem_core) {
+  //   cycle_step++;
+  // }
 }
 
 void Reactor::Transmute() { Transmute(n_assem_batch); }

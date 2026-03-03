@@ -175,6 +175,7 @@ class Reactor : public cyclus::Facility,
   /// were not traded away to other agents.
   void PushSpent(std::map<std::string, cyclus::toolkit::MatVec> leftover);
 
+  virtual void EventRequest();
   /// Returns all spent assemblies indexed by outcommod - removing them from
   /// the spent fuel buffer.
   std::map<std::string, cyclus::toolkit::MatVec> PopSpent();
@@ -461,6 +462,8 @@ class Reactor : public cyclus::Facility,
 
   // populated lazily and no need to persist.
   std::set<std::string> uniq_outcommods_;
+
+  int next_cycle = -1;
 };
 
 } // namespace cycamore

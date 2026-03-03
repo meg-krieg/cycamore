@@ -95,6 +95,16 @@ Enrichment::GetMatlRequests() {
   return ports;
 }
 
+void Enrichment::EventRequest(){
+  int t = context()->time();
+  Material::Ptr mat = Request_();
+  double amt = mat->quantity();
+  if (amt > cyclus::eps_rsrc()) {
+    context()->RegisterRequesters(t+1,this);
+    std::cout<<"ENRICHMENT Requested for " << t +1 << "\n";
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SortBids(cyclus::Bid<Material>* i,
               cyclus::Bid<Material>* j) {
