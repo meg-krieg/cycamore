@@ -169,6 +169,18 @@ Mixer::GetMatlRequests() {
   return ports;
 }
 
+void Mixer::EventRequest(){
+  int t = context()->time();
+  for (int i = 0; i < in_commods.size(); i++) {
+    std::string name = "in_stream_" + std::to_string(i);
+
+    if (streambufs[name].space() > cyclus::eps_rsrc()) {
+      context()->RegisterRequesters(t+1,this);
+      std::cout<<"MIXER Requested for " << t +1 << "\n";
+    }
+  }
+}
+
 void Mixer::AcceptMatlTrades(
     const std::vector<std::pair<cyclus::Trade<cyclus::Material>,
                                 cyclus::Material::Ptr> >& responses) {

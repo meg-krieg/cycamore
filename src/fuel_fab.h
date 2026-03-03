@@ -118,6 +118,7 @@ class FuelFab
   virtual void Tick(){};
   virtual void Tock(){};
   virtual void EnterNotify();
+  virtual void EventRequest();
 
   virtual std::set<cyclus::BidPortfolio<cyclus::Material>::Ptr> GetMatlBids(
       cyclus::CommodMap<cyclus::Material>::type& commod_requests);

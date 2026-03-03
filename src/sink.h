@@ -50,6 +50,8 @@ class Sink
 
   virtual void Tock();
 
+  virtual void EventRequest();
+
   /// @brief SinkFacilities request Materials of their given commodity. Note
   /// that it is assumed the Sink operates on a single resource type!
   virtual std::set<cyclus::RequestPortfolio<cyclus::Material>::Ptr>

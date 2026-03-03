@@ -130,6 +130,14 @@ Sink::GetMatlRequests() {
   return ports;
 }
 
+void Sink::EventRequest(){ // technically the facility does not need anymore material. should everything be reactor driven 
+  int t = context()->time();
+  if (requestAmt > cyclus::eps()) { 
+    context()->RegisterRequesters(t+1,this);
+    std::cout<<"SINK Requested for " << t +1 << "\n";
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::set<cyclus::RequestPortfolio<cyclus::Product>::Ptr>
 Sink::GetGenRsrcRequests() {

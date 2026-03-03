@@ -194,6 +194,8 @@ class Enrichment
   ///  @param time is the time to perform the tock
   virtual void Tock();
 
+  virtual void EventRequest();
+
   /// @brief The Enrichment request Materials of its given
   /// commodity.
   virtual std::set<cyclus::RequestPortfolio<cyclus::Material>::Ptr>

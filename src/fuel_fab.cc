@@ -228,6 +228,14 @@ std::set<cyclus::RequestPortfolio<Material>::Ptr> FuelFab::GetMatlRequests() {
   return ports;
 }
 
+void FuelFab::EventRequest(){
+  int t = context()->time();
+  if (fiss.space() > cyclus::eps_rsrc() || fill.space() > cyclus::eps_rsrc() || topup.space() > cyclus::eps_rsrc()) {
+    context()->RegisterRequesters(t+1,this);
+    std::cout<<"FUEFAB Requested for " << t +1 << "\n";
+  }
+}
+
 bool Contains(std::vector<std::string> vec, std::string s) {
   for (int i = 0; i < vec.size(); i++) {
     if (vec[i] == s) {

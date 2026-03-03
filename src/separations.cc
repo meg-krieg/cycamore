@@ -231,6 +231,17 @@ Separations::GetMatlRequests() {
   return ports;
 }
 
+
+void Separations::EventRequest() {
+  int t = context()->time();
+  int t_exit = exit_time();
+  if (!feed_recipe.empty()) {
+    context()->RegisterRequesters(t+1,this);
+    std::cout<<"SEP Requested for " << t+1;
+  }
+}
+
+
 void Separations::GetMatlTrades(
     const std::vector<cyclus::Trade<Material> >& trades,
     std::vector<std::pair<cyclus::Trade<Material>, Material::Ptr> >&
