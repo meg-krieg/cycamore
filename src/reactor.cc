@@ -21,6 +21,7 @@ Reactor::Reactor(cyclus::Context* ctx)
       power_cap(0),
       power_name("power"),
       discharged(false),
+      next_cycle(-1),
       keep_packaging(true) {}
 
 
@@ -59,7 +60,6 @@ void Reactor::InitFrom(cyclus::QueryableBackend* b) {
 
 void Reactor::EnterNotify() {
   cyclus::Facility::EnterNotify();
-
   // Set keep packaging parameter in all ResBufs
   fresh.keep_packaging(keep_packaging);
   core.keep_packaging(keep_packaging);
@@ -157,8 +157,9 @@ void Reactor::Tick() {
     Transmute();
     Record("CYCLE_END", "");
   }
-
+  std::cout<<"time " <<t << "next cycle" << next_cycle << "\n";
   if (t >= next_cycle && !discharged) { // MEg
+    std::cout << "discharging";
     discharged = Discharge();
   }
   if (t >= next_cycle) {
@@ -401,7 +402,7 @@ void Reactor::Tock() {
   // If this is the case, then a new cycle will be initiated.
   if (t >= next_cycle + refuel_time && core.count() == n_assem_core && discharged == true) { // MEG
     discharged = false;
-    cycle_step = 0;
+    //cycle_step = 0;
   }
 
   if (cycle_step == 0 && core.count() == n_assem_core) {

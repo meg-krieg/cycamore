@@ -363,6 +363,7 @@ class Reactor : public cyclus::Facility,
            "deployment curve.", \
   }
   std::string power_name;
+  int next_cycle;
 
   /////////// hybrid params ///////////
 
@@ -463,7 +464,6 @@ class Reactor : public cyclus::Facility,
   // populated lazily and no need to persist.
   std::set<std::string> uniq_outcommods_;
 
-  int next_cycle = -1;
 };
 
 } // namespace cycamore
