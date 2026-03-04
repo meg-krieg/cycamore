@@ -177,6 +177,7 @@ void Mixer::EventRequest(){
     if (streambufs[name].space() > cyclus::eps_rsrc()) {
       context()->RegisterRequesters(t+1,this);
       std::cout<<"MIXER Requested for " << t +1 << "\n";
+      break; // MEG if even one needs to be requested then we cna stop -- maybe rewrite this so that we can check all 3 at once 
     }
   }
 }
