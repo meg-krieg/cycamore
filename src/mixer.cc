@@ -122,7 +122,7 @@ void Mixer::Tick() {
     }
   }
   cyclus::toolkit::RecordTimeSeries<double>("supply"+out_commod, this, output.quantity());
-}
+} // I suspect that because this does not have a tock function there is some challenge with getting accurate information to make a new material request event 
 
 std::set<cyclus::RequestPortfolio<cyclus::Material>::Ptr>
 Mixer::GetMatlRequests() {
@@ -171,13 +171,15 @@ Mixer::GetMatlRequests() {
 
 void Mixer::EventRequest(){
   int t = context()->time();
+  Mixer::Tick();
   for (int i = 0; i < in_commods.size(); i++) {
     std::string name = "in_stream_" + std::to_string(i);
 
     if (streambufs[name].space() > cyclus::eps_rsrc()) {
       context()->RegisterRequesters(t+1,this);
       std::cout<<"MIXER Requested for " << t +1 << "\n";
-      break; // MEG if even one needs to be requested then we cna stop -- maybe rewrite this so that we can check all 3 at once 
+      continue;
+      //break; // MEG if even one needs to be requested then we cna stop -- maybe rewrite this so that we can check all 3 at once 
     }
   }
 }

@@ -153,19 +153,18 @@ void Reactor::Tick() {
     return;
   }
 
-  if (t == next_cycle) { //MEG
+  if (t == next_cycle - refuel_time) { //MEG
     Transmute();
     Record("CYCLE_END", "");
   }
-  std::cout<<"time " <<t << "next cycle" << next_cycle << "\n";
-  if (t >= next_cycle && !discharged) { // MEg
-    std::cout << "discharging";
+  //std::cout<<"time " <<t << "next cycle" << next_cycle << "\n";
+  if (t >=next_cycle - refuel_time && !discharged) { // MEg //come back 
+    //std::cout << "discharging";
     discharged = Discharge();
   }
-  if (t >= next_cycle) {
+  if (t >= next_cycle - refuel_time) {
     Load();
   }
-
 
   // update preferences
   for (int i = 0; i < pref_change_times.size(); i++) {
@@ -271,22 +270,23 @@ void Reactor::EventRequest(){
     n_assem_order = std::min(n_assem_order, n_need);
   }
 
-  if(t == next_cycle){
-    for(int refuel_step = 0; refuel_step < refuel_time; refuel_step++){
-      context()->RegisterRequesters(t + refuel_step, this);
-      std::cout<<"REACTOR Requested for " << t+refuel_step << "\n";
-    }
-  }
-  else if (t >= next_cycle) {
+  // if(t == next_cycle){
+  //   for(int refuel_step = 0; refuel_step < refuel_time; refuel_step++){
+  //     context()->RegisterRequesters(t + refuel_step, this);
+  //     std::cout<<"REACTOR Requested for " << t+refuel_step << "\n";
+  //   }
+  // }
+  if (t >= next_cycle) {
     if (n_assem_order > 0){
       context()->RegisterRequesters(t + 1,this);
-      std::cout<<"REACTOR Requested for " << t +1 << "\n";
+      //std::cout<<"REACTOR Requested for " << t +1 << "\n";
     }
     else if (n_assem_order == 0){
-      context()->RegisterRequesters(t + cycle_time, this);
       int refuel_step = 0;
-      next_cycle = t + cycle_time;
-      std::cout<<"REACTOR Requested for " << t+cycle_time << "\n";
+      next_cycle = t + cycle_time + refuel_time;
+      context()->RegisterRequesters(next_cycle, this);
+      context()->RegisterRequesters(next_cycle - refuel_time, this);
+      //std::cout<<"REACTOR Requested for " << t+cycle_time << "\n";
     }
   }
 }
@@ -400,16 +400,16 @@ void Reactor::Tock() {
   // Check that irradiation and refueling periods are over, that 
   // the core is full and that fuel was successfully discharged in this refueling time.
   // If this is the case, then a new cycle will be initiated.
-  if (t >= next_cycle + refuel_time && core.count() == n_assem_core && discharged == true) { // MEG
+  if (t>= next_cycle && core.count() == n_assem_core && discharged == true) { // MEG
     discharged = false;
     //cycle_step = 0;
   }
 
-  if (cycle_step == 0 && core.count() == n_assem_core) {
+  if (cycle_step == 0 && core.count() == n_assem_core) { // MEG fixthis 
     Record("CYCLE_START", "");
   }
 
-  if (cycle_step >= 0 && cycle_step < cycle_time && //MEG come baack to this 
+  if (t<= next_cycle - refuel_time && //MEG come baack to this 
       core.count() == n_assem_core) {
     cyclus::toolkit::RecordTimeSeries<cyclus::toolkit::POWER>(this, power_cap);
     cyclus::toolkit::RecordTimeSeries<double>("supplyPOWER", this, power_cap);
