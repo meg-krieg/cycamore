@@ -112,8 +112,9 @@ void Reactor::EnterNotify() {
   InitializePosition();
 }
 
-bool Reactor::CheckDecommissionCondition() {
-  return core.count() == 0 && spent.count() == 0;
+bool Reactor::CheckDecommissionCondition() { //MEG I dont like this either
+  int t = context()->time();
+  return core.count() == 0 && spent.count() == 0 && t>=exit_time() && lifetime()!=-1 ;
 }
 
 void Reactor::Tick() {
@@ -279,14 +280,12 @@ void Reactor::EventRequest(){
   if (t >= next_cycle) {
     if (n_assem_order > 0){
       context()->RegisterRequesters(t + 1,this);
-      //std::cout<<"REACTOR Requested for " << t +1 << "\n";
     }
     else if (n_assem_order == 0){
       int refuel_step = 0;
       next_cycle = t + cycle_time + refuel_time;
       context()->RegisterRequesters(next_cycle, this);
       context()->RegisterRequesters(next_cycle - refuel_time, this);
-      //std::cout<<"REACTOR Requested for " << t+cycle_time << "\n";
     }
   }
 }
@@ -419,12 +418,6 @@ void Reactor::Tock() {
     cyclus::toolkit::RecordTimeSeries<double>("supplyPOWER", this, 0);
     RecordSideProduct(false);
   }
-
-  // "if" prevents starting cycle after initial deployment until core is full
-  // even though cycle_step is its initial zero.
-  // if (cycle_step > 0 || core.count() == n_assem_core) {
-  //   cycle_step++;
-  // }
 }
 
 void Reactor::Transmute() { Transmute(n_assem_batch); }
