@@ -160,6 +160,7 @@ void Storage::Tick() {
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Storage::Tock() {
+  cyclus::Facility::Tock();
   LOG(cyclus::LEV_INFO3, "ComCnv") << prototype() << " is tocking {";
 
   BeginProcessing_();  // place unprocessed inventory into processing

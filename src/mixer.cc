@@ -171,7 +171,7 @@ Mixer::GetMatlRequests() {
 
 void Mixer::EventRequest(){
   int t = context()->time();
-  Mixer::Tick();
+  Tick();
   for (int i = 0; i < in_commods.size(); i++) {
     std::string name = "in_stream_" + std::to_string(i);
 

@@ -359,7 +359,9 @@ std::set<cyclus::BidPortfolio<Material>::Ptr> Separations::GetMatlBids(
   return ports;
 }
 
-void Separations::Tock() {}
+void Separations::Tock(){
+  cyclus::Facility::Tock();
+}
 
 bool Separations::CheckDecommissionCondition() {
   if (leftover.count() > 0) {

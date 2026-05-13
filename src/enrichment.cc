@@ -67,6 +67,7 @@ void Enrichment::Tick() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Enrichment::Tock() {
+  cyclus::Facility::Tock();
   using cyclus::toolkit::RecordTimeSeries;
   LOG(cyclus::LEV_INFO4, "EnrFac") << prototype() << " used "
                                    << intra_timestep_swu_ << " SWU";

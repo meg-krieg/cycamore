@@ -391,6 +391,7 @@ std::set<cyclus::BidPortfolio<Material>::Ptr> Reactor::GetMatlBids(
 }
 
 void Reactor::Tock() {
+  cyclus::Facility::Tock();
   int t = context()->time();
   if (retired()) {
     return;

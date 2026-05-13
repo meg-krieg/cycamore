@@ -227,6 +227,7 @@ void Sink::Tick() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sink::Tock() {
+  cyclus::Facility::Tock();
   LOG(cyclus::LEV_INFO3, "SnkFac") << prototype() << " is tocking {";
 
   // On the tock, the sink facility doesn't really do much.
