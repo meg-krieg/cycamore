@@ -164,6 +164,14 @@ void FuelFab::EnterNotify() {
   InitializePosition();
 }
 
+void FuelFab::Tick(){
+  cyclus::Facility::Tick();
+}
+
+void FuelFab::Tock(){
+  cyclus::Facility::Tick();
+}
+
 std::set<cyclus::RequestPortfolio<Material>::Ptr> FuelFab::GetMatlRequests() {
   using cyclus::RequestPortfolio;
 

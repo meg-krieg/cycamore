@@ -68,12 +68,14 @@ void Enrichment::EnterNotify() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Enrichment::Tick() {
+  cyclus::Facility::Tick();
   current_swu_capacity = SwuCapacity();
 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Enrichment::Tock() {
+  cyclus::Facility::Tock();
   using cyclus::toolkit::RecordTimeSeries;
   LOG(cyclus::LEV_INFO4, "EnrFac") << prototype() << " used "
                                    << intra_timestep_swu_ << " SWU";

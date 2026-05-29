@@ -115,8 +115,8 @@ class FuelFab
 
 #pragma cyclus
 
-  virtual void Tick(){};
-  virtual void Tock(){};
+  virtual void Tick();
+  virtual void Tock();
   virtual void EnterNotify();
 
   virtual std::set<cyclus::BidPortfolio<cyclus::Material>::Ptr> GetMatlBids(

@@ -72,6 +72,14 @@ void Source::Build(cyclus::Agent* parent) {
 
 }
 
+void Source::Tick(){
+  cyclus::Facility::Tick();
+}
+
+void Source::Tock(){
+  cyclus::Facility::Tock();
+}
+
 std::set<cyclus::BidPortfolio<cyclus::Material>::Ptr> Source::GetMatlBids(
     cyclus::CommodMap<cyclus::Material>::type& commod_requests) {
   using cyclus::BidPortfolio;

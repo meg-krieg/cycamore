@@ -94,6 +94,7 @@ void Mixer::EnterNotify() {
 }
 
 void Mixer::Tick() {
+  cyclus::Facility::Tick();
   if (output.quantity() < output.capacity()) {
     double tgt_qty = output.space();
 

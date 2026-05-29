@@ -181,6 +181,7 @@ void Sink::AcceptGenRsrcTrades(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sink::Tick() {
+  cyclus::Facility::Tick();
   using std::string;
   using std::vector;
   LOG(cyclus::LEV_INFO3, "SnkFac") << "Sink " << this->id() << " is ticking {";
@@ -219,6 +220,7 @@ void Sink::Tick() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Sink::Tock() {
+  cyclus::Facility::Tock();
   LOG(cyclus::LEV_INFO3, "SnkFac") << prototype() << " is tocking {";
 
   // On the tock, the sink facility doesn't really do much.

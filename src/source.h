@@ -59,9 +59,9 @@ class Source : public cyclus::Facility,
 
   virtual void InitFrom(cyclus::QueryableBackend* b);
 
-  virtual void Tick() {};
+  virtual void Tick();
 
-  virtual void Tock() {};
+  virtual void Tock();
 
   virtual std::string str();
 

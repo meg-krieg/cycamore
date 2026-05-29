@@ -74,11 +74,14 @@ std::string Conversion::str() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Conversion::Tick() {
+  cyclus::Facility::Tick();
   Convert();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Conversion::Tock() {}
+void Conversion::Tock() {
+  cyclus::Facility::Tock();
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 double Conversion::AvailableFeedstockCapacity() {
