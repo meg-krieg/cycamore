@@ -139,6 +139,7 @@ bool Reactor::CheckDecommissionCondition() {
 }
 
 void Reactor::Tick() {
+  cyclus::Facility::Tick();
   // The following code must go in the Tick so they fire on the time step
   // following the cycle_step update - allowing for the all reactor events to
   // occur and be recorded on the "beginning" of a time step.  Another reason
@@ -146,6 +147,7 @@ void Reactor::Tick() {
   // can't go at the beginnin of the Tock is so that resource exchange has a
   // chance to occur after the discharge on this same time step.
   if (retired()) {
+    std::cout << "reactor is retired" << std::endl;
     Record("RETIRED", "");
 
     if (context()->time() == exit_time() + 1) { // only need to transmute once
@@ -168,6 +170,7 @@ void Reactor::Tick() {
       spent.Push(fresh.Pop());
     }
     if(CheckDecommissionCondition()) {
+      std::cout << "decoming reactor" << std::endl;
       context()->SchedDecom(this);    
     }
     return;
@@ -376,6 +379,7 @@ std::set<cyclus::BidPortfolio<Material>::Ptr> Reactor::GetMatlBids(
 }
 
 void Reactor::Tock() {
+  cyclus::Facility::Tock();
   if (retired()) {
     return;
   }
